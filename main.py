@@ -61,3 +61,14 @@ def construir_matriz_distancias(pontos):
                 dy = pontos[i][1] - pontos[j][1]
                 dist[i][j] = math.hypot(dx, dy)
     return dist
+
+
+# ------------------------------------------------------------------
+# 2. CENARIO "ANTES" — despacho ingenuo (sem otimizacao)
+#    Simula o que o dispatcher faz hoje: agrupa enderecos na ordem
+#    em que chegaram, sem nenhum criterio de proximidade.
+# ------------------------------------------------------------------
+def rotas_ingenuas(n, capacidade):
+    clientes = list(range(1, n + 1))
+    rotas = [clientes[i:i + capacidade] for i in range(0, len(clientes), capacidade)]
+    return rotas
