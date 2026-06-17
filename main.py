@@ -72,3 +72,67 @@ def rotas_ingenuas(n, capacidade):
     clientes = list(range(1, n + 1))
     rotas = [clientes[i:i + capacidade] for i in range(0, len(clientes), capacidade)]
     return rotas
+
+
+# ------------------------------------------------------------------
+# 3. ALGORITMO CLARKE-WRIGHT SAVINGS
+# ------------------------------------------------------------------
+def clarke_wright_savings(n, dist, capacidade):
+    """
+    Passo 1: cada cliente comeca em sua propria rota
+             (deposito -> cliente -> deposito).
+    Passo 2: calcula a 'economia' (savings) de unir cada par (i, j):
+             s(i, j) = dist(0, i) + dist(0, j) - dist(i, j)
+             -> quanto maior, mais vantajoso visitar i e j na
+                MESMA rota em vez de rotas separadas.
+    Passo 3: ordena as economias da maior para a menor e funde
+             rotas greedily, respeitando duas regras:
+               a) so se pode fundir nas EXTREMIDADES de cada rota
+                  (clientes "interiores" ja estao travados);
+               b) a rota resultante nao pode exceder a capacidade
+                  do entregador.
+    """
+    rotas = {i: [i] for i in range(1, n + 1)}
+    rota_de = {i: i for i in range(1, n + 1)}
+
+    # calcula as economias para todos os pares de enderecos
+    economias = []
+    for i in range(1, n + 1):
+        for j in range(i + 1, n + 1):
+            s = dist[0][i] + dist[0][j] - dist[i][j]
+            economias.append((s, i, j))
+    economias.sort(key=lambda x: x[0], reverse=True)
+
+    for s, i, j in economias:
+        ri, rj = rota_de[i], rota_de[j]
+        if ri == rj:
+            continue  # ja estao na mesma rota
+
+        rota_i, rota_j = rotas[ri], rotas[rj]
+        if len(rota_i) + len(rota_j) > capacidade:
+            continue  # excede a capacidade do entregador
+
+        i_inicio, i_fim = rota_i[0] == i, rota_i[-1] == i
+        j_inicio, j_fim = rota_j[0] == j, rota_j[-1] == j
+
+        if not (i_inicio or i_fim) or not (j_inicio or j_fim):
+            continue  # i ou j esta "preso" no meio de uma rota
+
+        if i_fim and j_inicio:
+            nova_rota = rota_i + rota_j
+        elif j_fim and i_inicio:
+            nova_rota = rota_j + rota_i
+        elif i_fim and j_fim:
+            nova_rota = rota_i + rota_j[::-1]
+        elif i_inicio and j_inicio:
+            nova_rota = rota_i[::-1] + rota_j
+        else:
+            continue
+
+        novo_id = ri
+        rotas[novo_id] = nova_rota
+        del rotas[rj]
+        for cliente in nova_rota:
+            rota_de[cliente] = novo_id
+
+    return list(rotas.values())
