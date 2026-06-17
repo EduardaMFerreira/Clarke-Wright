@@ -137,8 +137,3 @@ Ao final da execução, o programa apresenta:
 * Clarke-Wright Savings
 * Otimização Logística
 
-Implementação do algoritmo Clarke-Wright Savings.
-
-### Commit 4
-
-Implementação das métricas, visualização e relatório final.
