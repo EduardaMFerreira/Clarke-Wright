@@ -137,20 +137,6 @@ Ao final da execução, o programa apresenta:
 * Clarke-Wright Savings
 * Otimização Logística
 
----
-
-## Organização dos Commits
-
-### Commit 1
-
-Implementação da modelagem do grafo e matriz de distâncias.
-
-### Commit 2
-
-Implementação do cenário inicial sem otimização.
-
-### Commit 3
-
 Implementação do algoritmo Clarke-Wright Savings.
 
 ### Commit 4
